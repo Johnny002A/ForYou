@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mi Vaquita Hermosa ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background-color: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: #ffb6c1;
+    position: relative;
+    height: 100vh;
+  }
+  .rain {
+    position: absolute;
+    top: -40px;
+    color: rgba(255, 51, 51, 0.4);
+    font-size: 18px;
+    white-space: nowrap;
+    animation: fall linear infinite;
+    text-shadow: 0 0 6px rgba(255, 51, 51, 0.8);
+    user-select: none;
+  }
+  @keyframes fall {
+    0% { top: -40px; opacity: 0; }
+    10% { opacity: 0.8; }
+    100% { top: 110%; opacity: 0; }
+  }
+  #starsCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    background: rgb(0, 0, 0);
+  }
+  .center-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 100;
+    max-width: 90vw;
+  }
+  .center-message {
+    color: #f5d2d7;
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 3px #fc8cb0;
+  }
+  .question {
+    color: #fae9ec;
+    font-size: 28px;
+    font-family: 'Great Vibes', cursive;
+    margin-bottom: 12px;
+    text-shadow: 0 0 6px #f73697, 0 0 12px #f00482;
+    animation: sparkle 2s infinite;
+  }
+  @keyframes sparkle {
+    0%, 100% { text-shadow: 0 0 6px #ee3692, 0 0 12px #ff1493; }
+    50% { text-shadow: 0 0 10px #ff99cc, 0 0 20px #ff69b4; }
+  }
+  .button {
+    padding: 12px 26px;
+    margin: 10px;
+    font-size: 20px;
+    font-family: 'Great Vibes', cursive;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(136, 119, 121, 0.7);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 4px #fff;
+    user-select: none;
+  }
+  .yes {
+    background: linear-gradient(to right, #c2226f, #f18698);
+    color: white;
+  }
+  .no {
+    background: linear-gradient(to right, #999, #666);
+    color: white;
+  }
+  .button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(255, 182, 193, 0.9);
+  }
+  .typing {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid rgb(202, 0, 34);
+    animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+    display: inline-block;
+  }
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+  #special-image {
+    max-width: 200px;
+    border-radius: 20px;
+    margin-top: 15px;
+    box-shadow: 0 0 15px rgb(255, 115, 138);
+  }
+  #pinkboard {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 50;
+  }
+  #counter {
+    margin-top: 20px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 24px;
+    color: #f8a2b0;
+    text-shadow: 0 0 5px #ff69b4;
+  }
+  #voice-button {
+    margin-top: 25px;
+    background: linear-gradient(to right, #b91263, #ff768d);
+    border-radius: 30px;
+    border: none;
+    padding: 12px 24px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 22px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgb(231, 117, 183);
+    transition: 0.3s;
+  }
+  #voice-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #ff69b4;
+  }
+  #secret-button {
+    display: none;
+    margin-top: 20px;
+    background: #ff1493;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 22px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px deeppink;
+    user-select: none;
+  }
+  #secret-message {
+    margin-top: 15px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 28px;
+    color: #ff69b4;
+    text-shadow: 0 0 10px deeppink;
+  }
+</style>
+</head>
+<body>
+
+<!-- Canvas para estrellas -->
+<canvas id="starsCanvas"></canvas>
+
+<div class="center-container" id="love-question">
+  <div class="center-message">
+    Eres Mi<br>Vaquita<br>hermosa,<br>mi amor por ti es<br>para siempre
+  </div>
+  <div class="question">¿Me quieres de verdad?</div>
+  <div>
+    <button class="button yes" onclick="answerYes()">Sí 💖</button>
+    <button class="button no" onclick="answerNo()">No 😢</button>
+  </div>
+</div>
+
+<!-- Canvas partículas corazón -->
+<canvas id="pinkboard"></canvas>
+
+<!-- Audio canción -->
+<audio id="loveSong" src="tear_in_my_heart.mp3" loop></audio>
+
+<!-- Audio voz -->
+<audio id="voiceAudio" src="voz_te_quiero.mp3"></audio>
+
+<script>
+  // === Lluvia de "Te quiero" y corazones ===
+  const numberOfDrops = 40;
+  const rainOptions = ["Te quiero muuuuu", "❤️", "💖", "💘"];
+  for(let i=0; i<numberOfDrops; i++) {
+    const drop = document.createElement("div");
+    drop.className = "rain";
+    drop.textContent = rainOptions[Math.floor(Math.random() * rainOptions.length)];
+    drop.style.left = Math.random() * 100 + "vw";
+    drop.style.animationDuration = (7 + Math.random() * 4) + "s";
+    drop.style.animationDelay = Math.random() * 6 + "s";
+    document.body.appendChild(drop);
+  }
+
+  // === Fondo estrellas suaves ===
+  const starsCanvas = document.getElementById("starsCanvas");
+  const ctxStars = starsCanvas.getContext("2d");
+  let stars = [];
+  function initStars() {
+    starsCanvas.width = window.innerWidth;
+    starsCanvas.height = window.innerHeight;
+    stars = [];
+    for(let i=0; i<150; i++) {
+      stars.push({
+        x: Math.random()*starsCanvas.width,
+        y: Math.random()*starsCanvas.height,
+        radius: Math.random()*1.2 + 0.3,
+        alpha: Math.random(),
+        delta: Math.random()*0.02 + 0.005
+      });
+    }
+  }
+  function drawStars() {
+    ctxStars.clearRect(0,0,starsCanvas.width, starsCanvas.height);
+    for(let s of stars) {
+      s.alpha += s.delta;
+      if(s.alpha <= 0) { s.alpha = 0; s.delta = -s.delta; }
+      if(s.alpha >= 1) { s.alpha = 1; s.delta = -s.delta; }
+      ctxStars.beginPath();
+      ctxStars.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+      ctxStars.fillStyle = `rgba(255,255,255,${s.alpha})`;
+      ctxStars.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+  window.addEventListener("resize", initStars);
+  initStars();
+  drawStars();
+
+  // === Respuestas botones ===
+  function answerNo() {
+    document.getElementById("love-question").innerHTML = `
+      <div class="center-message"> Eso me rompe el corazón. Gracias😢💔</div>
+    `;
+  }
+
+  function answerYes() {
+    document.getElementById("love-question").innerHTML = `
+      <div class="center-message typing" id="typing-message">¡Yo también te quiero mi vaquita! 🐮❤️</div>
+      <div style="display: flex; justify-content: center; align-items: center; margin-top: 15px;">
+        <img id="special-image" src="imagen_juntos.jpg" alt="Nosotros" />
+      </div>
+      <div id="counter">Desde que regresaste a mi vida.: <span id="time-together">calculando...</span></div>
+      <button id="voice-button" class="button">Escuchar mi voz 💬</button>
+      <button id="secret-button">¿Eres mi vaquita? 💕</button>
+      <div id="secret-message"></div>
+    `;
+
+    // Cambiar fondo a degradado romántico
+    document.body.style.background = "linear-gradient(to bottom, #ffafbd, #ffc3a0)";
+
+    // Reproducir canción
+    const song = document.getElementById("loveSong");
+    song.volume = 1;
+    song.play();
+
+    // Inicializar partículas corazón
+    startHeartParticles();
+
+    // Mostrar contador de tiempo juntos
+    startTimeTogetherCounter();
+
+    // Botón voz: baja volumen canción y reproduce voz
+    const voiceBtn = document.getElementById("voice-button");
+    voiceBtn.onclick = () => {
+      const voice = document.getElementById("voiceAudio");
+
+      song.volume = 0.3;
+      voice.play();
+
+      voice.onended = () => {
+        song.volume = 1;
+      };
+    };
+
+    // Botón secreto
+    const secretBtn = document.getElementById("secret-button");
+    const secretMsg = document.getElementById("secret-message");
+    secretBtn.style.display = "inline-block";
+    secretBtn.onclick = () => {
+      secretMsg.textContent = "¡Eres mi vaquita hermosa y para siempre! 🐮💖";
+      explodeHearts();
+    };
+  }
+
+  // === Contador de tiempo juntos ===
+  function startTimeTogetherCounter() {
+    const startDate = new Date(2025, 3, 12); // Abril (mes 3) 12, 2025
+    function updateCounter() {
+      const now = new Date();
+      let diff = now - startDate;
+      const days = Math.floor(diff / (1000*60*60*24));
+      const months = Math.floor(days / 30);
+      const years = Math.floor(months / 12);
+      const remMonths = months % 12;
+      const remDays = days % 30;
+      document.getElementById("time-together").textContent =
+        `${years} años, ${remMonths} meses y ${remDays} días`;
+    }
+    updateCounter();
+    setInterval(updateCounter, 1000*60*60);
+  }
+
+  // === Partículas corazón estilo canvas ===
+  function startHeartParticles() {
+    const canvas = document.getElementById("pinkboard");
+    const ctx = canvas.getContext("2d");
+    const settings = {
+      particles: {
+        length: 10000,
+        duration: 4,
+        velocity: 80,
+        effect: -1.3,
+        size: 8,
+      },
+    };
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let time;
+    const particleRate = settings.particles.length / settings.particles.duration;
+    const particles = new Array(settings.particles.length).fill().map(() => ({
+      position: { x: 0, y: 0 },
+      velocity: { x: 0, y: 0 },
+      acceleration: { x: 0, y: 0 },
+      age: 0
+    }));
+    let firstActive = 0, firstFree = 0;
+
+    function pointOnHeart(t) {
+      return {
+        x: 160 * Math.pow(Math.sin(t), 3),
+        y: 130 * Math.cos(t) - 50 * Math.cos(2*t) - 20 * Math.cos(3*t) - 10 * Math.cos(4*t) + 25
+      };
+    }
+
+    const heartImage = (() => {
+      const c = document.createElement("canvas");
+      c.width = settings.particles.size;
+      c.height = settings.particles.size;
+      const ctx = c.getContext("2d");
+
+      function to(t) {
+        const point = pointOnHeart(t);
+        point.x = settings.particles.size/2 + (point.x * settings.particles.size)/350;
+        point.y = settings.particles.size/2 - (point.y * settings.particles.size)/350;
+        return point;
+      }
+
+      ctx.beginPath();
+      let t = -Math.PI;
+      let p = to(t);
+      ctx.moveTo(p.x, p.y);
+      while(t < Math.PI) {
+        t += 0.01;
+        p = to(t);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#f50b02";
+      ctx.fill();
+
+      const image = new Image();
+      image.src = c.toDataURL();
+      return image;
+    })();
+
+    function addParticle(x, y, dx, dy) {
+      const p = particles[firstFree];
+      p.position.x = x;
+      p.position.y = y;
+      p.velocity.x = dx;
+      p.velocity.y = dy;
+      p.acceleration.x = dx * settings.particles.effect;
+      p.acceleration.y = dy * settings.particles.effect;
+      p.age = 0;
+
+      firstFree++;
+      if(firstFree === particles.length) firstFree = 0;
+      if(firstActive === firstFree) firstActive++;
+      if(firstActive === particles.length) firstActive = 0;
+    }
+
+    function updateParticles(deltaTime) {
+      if(firstActive < firstFree) {
+        for(let i=firstActive; i<firstFree; i++) update(particles[i], deltaTime);
+      } else {
+        for(let i=firstActive; i<particles.length; i++) update(particles[i], deltaTime);
+        for(let i=0; i<firstFree; i++) update(particles[i], deltaTime);
+      }
+      while(particles[firstActive].age >= settings.particles.duration && firstActive !== firstFree) {
+        firstActive++;
+        if(firstActive === particles.length) firstActive = 0;
+      }
+    }
+
+    function update(p, deltaTime) {
+      p.position.x += p.velocity.x * deltaTime;
+      p.position.y += p.velocity.y * deltaTime;
+      p.velocity.x += p.acceleration.x * deltaTime;
+      p.velocity.y += p.acceleration.y * deltaTime;
+      p.age += deltaTime;
+    }
+
+    function drawParticles() {
+      if(firstActive < firstFree) {
+        for(let i=firstActive; i<firstFree; i++) draw(particles[i]);
+      } else {
+        for(let i=firstActive; i<particles.length; i++) draw(particles[i]);
+        for(let i=0; i<firstFree; i++) draw(particles[i]);
+      }
+    }
+
+    function draw(p) {
+      function ease(t) {
+        return --t*t*t + 1;
+      }
+      const size = heartImage.width * ease(p.age/settings.particles.duration);
+      ctx.globalAlpha = 1 - p.age/settings.particles.duration;
+      ctx.drawImage(heartImage, p.position.x - size/2, p.position.y - size/2, size, size);
+    }
+
+    function render() {
+      requestAnimationFrame(render);
+      const newTime = Date.now()/1000;
+      const deltaTime = newTime - (time || newTime);
+      time = newTime;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const amount = particleRate * deltaTime;
+      for(let i=0; i<amount; i++) {
+        const pos = pointOnHeart(Math.PI - 2*Math.PI*Math.random());
+        const len = Math.sqrt(pos.x*pos.x + pos.y*pos.y);
+        const dir = { x: pos.x/len * settings.particles.velocity, y: pos.y/len * settings.particles.velocity };
+        addParticle(canvas.width/2 + pos.x, canvas.height/2 - pos.y, dir.x, -dir.y);
+      }
+      updateParticles(deltaTime);
+      drawParticles();
+    }
+
+    render();
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  }
+
+  // === Explosión de corazones (botón secreto) ===
+  function explodeHearts() {
+    const canvas = document.getElementById("pinkboard");
+    const ctx = canvas.getContext("2d");
+    const hearts = [];
+    const maxHearts = 100;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function Heart(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 20 + 10;
+      this.speedX = (Math.random() - 0.5) * 10;
+      this.speedY = (Math.random() - 1) * 10;
+      this.opacity = 1;
+    }
+
+    Heart.prototype.update = function() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.opacity -= 0.02;
+      this.speedY += 0.2;
+    }
+
+    Heart.prototype.draw = function() {
+      ctx.fillStyle = `rgba(255, 20, 147, ${this.opacity})`;
+      ctx.beginPath();
+      const topCurveHeight = this.size * 0.3;
+      ctx.moveTo(this.x, this.y + topCurveHeight);
+      // Left curve
+      ctx.bezierCurveTo(this.x, this.y, this.x - this.size/2, this.y, this.x - this.size/2, this.y + topCurveHeight);
+      // Bottom left
+      ctx.bezierCurveTo(this.x - this.size/2, this.y + this.size/2, this.x, this.y + this.size/1.5, this.x, this.y + this.size);
+      // Bottom right
+      ctx.bezierCurveTo(this.x, this.y + this.size/1.5, this.x + this.size/2, this.y + this.size/2, this.x + this.size/2, this.y + topCurveHeight);
+      // Right curve
+      ctx.bezierCurveTo(this.x + this.size/2, this.y, this.x, this.y, this.x, this.y + topCurveHeight);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for(let i=hearts.length-1; i>=0; i--) {
+        const h = hearts[i];
+        h.update();
+        if(h.opacity <= 0) hearts.splice(i, 1);
+        else h.draw();
+      }
+      if(hearts.length > 0) requestAnimationFrame(animate);
+    }
+
+    for(let i=0; i<maxHearts; i++) {
+      hearts.push(new Heart(canvas.width/2, canvas.height/2));
+    }
+    animate();
+  }
+</script>
+</body>
+</html>
